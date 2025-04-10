@@ -117,6 +117,8 @@ public class QuadTree {
                 return Method.calculateVariance(this, x, y, width, height);
             case 2:
                 return Method.calculateMAD(this, x, y, width, height);
+            case 3:
+                return Method.calculateMaxPixelDifference(this, x, y, width, height);
             default:
                 return Method.calculateVariance(this, x, y, width, height); // fallback
         }

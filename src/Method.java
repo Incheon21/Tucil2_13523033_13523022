@@ -63,6 +63,33 @@ public class Method {
 
     return (madR + madG + madB) / 3.0;
   }
-  
+  // metode max pixel difference
+  public static double calculateMaxPixelDifference(QuadTree quadTree, int x, int y, int width, int height){
+    
+    java.awt.Color avgColor = quadTree.getAverageColor(x, y, width, height);
+    int meanR = avgColor.getRed();
+    int meanG = avgColor.getGreen();
+    int meanB = avgColor.getBlue();
 
+    int maxDifference = 0;
+
+    int endX = Math.min(x + width, quadTree.getWidth());
+    int endY = Math.min(y + height, quadTree.getHeight());
+
+    for (int cy = y; cy < endY; cy++) {
+      for (int cx = x; cx < endX; cx++) {
+        java.awt.Color pixelColor = quadTree.getAverageColor(cx, cy, 1, 1);
+        int diffR = Math.abs(pixelColor.getRed() - meanR);
+        int diffG = Math.abs(pixelColor.getGreen() - meanG);
+        int diffB = Math.abs(pixelColor.getBlue() - meanB);
+
+        int pixelMax = Math.max(diffR, Math.max(diffG, diffB));
+        maxDifference = Math.max(maxDifference, pixelMax);
+      }
+    }
+
+    return maxDifference;
+  }
+  
+  
 }
