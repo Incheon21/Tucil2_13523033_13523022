@@ -17,6 +17,7 @@ public class Main {
             System.out.println("1. Variance");
             System.out.println("2. Mean Absolute Deviation (MAD)");
             System.out.println("3. Max Pixel Difference");
+            System.out.println("4. Entropy");
             
             int errorMethod = Integer.parseInt(scanner.nextLine());
             

@@ -15,10 +15,10 @@ public class QuadTree {
 
     public QuadTree(BufferedImage image, int minBlockSize, double threshold, int errorMethod) {
         this.minBlockSize = minBlockSize;
-        this.errorMethod = errorMethod;
-        this.treeDepth = 0;
+        this.threshold = threshold;
         this.treeDepth = 0;
         this.nodeCount = 1;
+        this.errorMethod = errorMethod;
         root = new QuadTreeNode(0, 0, image.getWidth(), image.getHeight());
 
         this.red = new int[root.getHeight()][root.getWidth()];
@@ -111,7 +111,7 @@ public class QuadTree {
         int y = node.getY();
         int width = node.getWidth();
         int height = node.getHeight();
-
+        
         switch (errorMethod) {
             case 1:
                 return Method.calculateVariance(this, x, y, width, height);
@@ -119,21 +119,22 @@ public class QuadTree {
                 return Method.calculateMAD(this, x, y, width, height);
             case 3:
                 return Method.calculateMaxPixelDifference(this, x, y, width, height);
+            case 4:
+                return Method.calculateEntropy(this, x, y, width, height);
             default:
-                return Method.calculateVariance(this, x, y, width, height); // fallback
+                return Method.calculateVariance(this, x, y, width, height);
         }
-
     }
 
-    // reconstruct image dari quadtree dengan depth tertentu
-    public BufferedImage generateCompressedImageAtDepth(int depth) {
+    // reconstruct hasil kompresi dengan matrix
+    public BufferedImage generateCompressedImage() {
         BufferedImage outputImage = new BufferedImage(root.getWidth(), root.getHeight(), BufferedImage.TYPE_INT_RGB);
-
+        
         this.red = new int[root.getHeight()][root.getWidth()];
         this.green = new int[root.getHeight()][root.getWidth()];
         this.blue = new int[root.getHeight()][root.getWidth()];
 
-        drawQuadTreeAtDepth(root, 0, depth);
+        drawQuadTree(root);
 
         for (int y = 0; y < root.getHeight(); y++) {
             for (int x = 0; x < root.getWidth(); x++) {
@@ -145,23 +146,18 @@ public class QuadTree {
         return outputImage;
     }
 
-    // generate final compressed image
-    public BufferedImage generateCompressedImage() {
-        return generateCompressedImageAtDepth(treeDepth);
-    }
-
     // mengisi region dengan warna average
     private void drawNode(QuadTreeNode node) {
         fillRegion(node.getX(), node.getY(), node.getWidth(), node.getHeight(), node.getAvgColor());
     }
 
     // memindahkan warna quadtree pada matrix
-    private void drawQuadTreeAtDepth(QuadTreeNode node, int currentDepth, int maxDepth) {
-        if (currentDepth >= maxDepth || node.isLeaf()) {
+    private void drawQuadTree(QuadTreeNode node) {
+        if (node.isLeaf()) {
             drawNode(node);
         } else {
             for (QuadTreeNode child : node.getChildren()) {
-                drawQuadTreeAtDepth(child, currentDepth + 1, maxDepth);
+                drawQuadTree(child);
             }
         }
     }

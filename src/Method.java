@@ -89,7 +89,31 @@ public class Method {
     }
 
     return maxDifference;
+  } 
+  // metode entropy
+  public static double calculateEntropy(QuadTree quadTree, int x, int y, int width, int height){
+    int [] histogram = new int[256];
+    int total = 0;
+
+    int endX = Math.min(x + width, quadTree.getWidth());
+    int endY = Math.min(y + height, quadTree.getHeight());
+
+    for (int cy = y; cy < endY;cy++){
+      for (int cx = x; cx < endX; cx++){
+        java.awt.Color color = quadTree.getAverageColor(cx, cy, 1, 1);
+        int gray = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
+        histogram[gray]++;
+        total++;
+      }
+    }
+
+    double entropy = 0.0;
+    for (int i = 0; i < 256 ; i++){
+      if (histogram[i] > 0){
+        double p = (double) histogram[i] / total;
+        entropy -= p * (Math.log(p) / Math.log(2));
+      }
+    }
+    return entropy;
   }
-  
-  
 }
