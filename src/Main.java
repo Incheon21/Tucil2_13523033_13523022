@@ -15,6 +15,8 @@ public class Main {
             
             System.out.println("Select error measurement method:");
             System.out.println("1. Variance");
+            System.out.println("2. Mean Absolute Deviation (MAD)");
+            
             int errorMethod = Integer.parseInt(scanner.nextLine());
             
             System.out.print("Masukkan nilai threshold: ");
