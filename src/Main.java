@@ -18,6 +18,7 @@ public class Main {
             System.out.println("2. Mean Absolute Deviation (MAD)");
             System.out.println("3. Max Pixel Difference");
             System.out.println("4. Entropy");
+            System.out.println("5. Structural Similarity Index (SSIM)");
             
             int errorMethod = Integer.parseInt(scanner.nextLine());
             

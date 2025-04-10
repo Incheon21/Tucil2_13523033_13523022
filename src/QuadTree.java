@@ -121,6 +121,9 @@ public class QuadTree {
                 return Method.calculateMaxPixelDifference(this, x, y, width, height);
             case 4:
                 return Method.calculateEntropy(this, x, y, width, height);
+            case 5:
+                double ssim = Method.calculateSSIM(this, x, y, width, height);
+                return 1.0 - ssim; //1 - SSIM untuk mendapat error
             default:
                 return Method.calculateVariance(this, x, y, width, height);
         }
