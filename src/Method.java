@@ -117,13 +117,14 @@ public class Method {
     return entropy;
   }
 
+  // metode structural similarity index (SSIM)
   public static double calculateSSIM(QuadTree quadTree, int x, int y, int width, int height) {
     int endX = Math.min(x + width, quadTree.getWidth());
     int endY = Math.min(y + height, quadTree.getHeight());
     int N = (endX - x) * (endY - y);
 
     if (N == 0) {
-      return 1.0; // SSIM for empty region
+      return 1.0; // pixel 0
     } 
 
     double[] origL = new double[N]; //original luminance
