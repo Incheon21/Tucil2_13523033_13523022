@@ -186,10 +186,8 @@ public class Method {
     public static QuadTree findOptimalParameters(BufferedImage originalImage, int errorMethod,
             double targetCompressionRate, String inputPath, String outputPath, String tempDirPath,
             String fileExtension) throws IOException {
-        // If target compression rate is specified, use variance as error method
         if (targetCompressionRate > 0 && targetCompressionRate <= 1) {
-            errorMethod = 1; // 1 corresponds to Variance
-            System.out.println("Using Variance as error measurement method for target compression");
+            errorMethod = 1;
         }
 
         double minThreshold = 0.0;
@@ -203,11 +201,9 @@ public class Method {
         double bestDifference = Double.MAX_VALUE;
         double epsilon = 0.001;
 
-        System.out.println("\nStep 1: Finding optimal threshold with binary search (using fixed block size "
-                + minBlockSizeStart + "):");
         int iterations = 0;
 
-        while ((maxThreshold - minThreshold) > epsilon && iterations < 20) { // Add iteration limit for safety
+        while ((maxThreshold - minThreshold) > epsilon && iterations < 20) { 
             iterations++;
             double midThreshold = (minThreshold + maxThreshold) / 2;
 
@@ -246,8 +242,6 @@ public class Method {
         // Reset best difference for block size search
         bestDifference = Double.MAX_VALUE;
 
-        // System.out.println("\nStep 2: Finding optimal minimum block size with binary search (using threshold " +
-        //         String.format("%.4f", optimalThreshold) + "):");
 
         int minBlockSizeMin = minBlockSizeStart;
         int minBlockSizeMax = maxBlockSize;

@@ -58,21 +58,17 @@ public class Main {
             QuadTree quadTree;
 
             if (targetCompressionRate > 0 && targetCompressionRate <= 1) {
-                System.out.println("\nMencari parameter teroptimal untuk mendekati target: " +
-                        String.format("%.2f", targetCompressionRate * 100) + "%");
 
                 File tempDir = new File(new File(outputPath).getParent(), "temp");
                 if (!tempDir.exists()) {
                     tempDir.mkdirs();
                 }
-                System.out.println("Debug images will be saved in: " + tempDir.getAbsolutePath());
                 String fileExtension = FileProcessor.getFileExtension(inputPath);
 
                 quadTree = Method.findOptimalParameters(originalImage, 1, targetCompressionRate, inputPath,
                         outputPath, tempDir.getAbsolutePath(), fileExtension);
 
                 FileProcessor.deleteDirectory(tempDir);
-                System.out.println("Temporary debug images have been deleted.");
             } else {
                 quadTree = new QuadTree(originalImage, minBlockSize, threshold, errorMethod);
             }
