@@ -14,28 +14,44 @@ public class Main {
             String inputPath = scanner.nextLine();
             BufferedImage originalImage = FileProcessor.loadImage(inputPath);
 
-            System.out.println("Select error measurement method:");
-            System.out.println("1. Variance");
-            System.out.println("2. Mean Absolute Deviation (MAD)");
-            System.out.println("3. Max Pixel Difference");
-            System.out.println("4. Entropy");
-            System.out.println("5. Structural Similarity Index (SSIM)");
-            System.out.print("Masukkan pilihan (1-5): ");
-
-            int errorMethod = Integer.parseInt(scanner.nextLine());
-
-            System.out.print("Masukkan nilai threshold: ");
-            double threshold = Double.parseDouble(scanner.nextLine());
-
-            System.out.print("Masukkan ukuran minimum block: ");
-            int minBlockSize = Integer.parseInt(scanner.nextLine());
-
             System.out.print(
-                    "Masukkan target compression rate (0-1, 0 untuk menggunakan threshold dan minimum block size yang telah ditentukan): ");
+                    "Masukkan target compression rate (0-1, 0 untuk menggunakan threshold dan minimum block size secara manual): ");
             double targetCompressionRate = Double.parseDouble(scanner.nextLine());
+
+            int errorMethod = 1;
+            double threshold = 0;
+            int minBlockSize = 4;
+
+            if (targetCompressionRate == 0) {
+                System.out.println("Select error measurement method:");
+                System.out.println("1. Variance");
+                System.out.println("2. Mean Absolute Deviation (MAD)");
+                System.out.println("3. Max Pixel Difference");
+                System.out.println("4. Entropy");
+                System.out.println("5. Structural Similarity Index (SSIM)");
+                System.out.print("Masukkan pilihan (1-5): ");
+
+                errorMethod = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Masukkan nilai threshold: ");
+                threshold = Double.parseDouble(scanner.nextLine());
+
+                System.out.print("Masukkan ukuran minimum block: ");
+                minBlockSize = Integer.parseInt(scanner.nextLine());
+            }
 
             System.out.print("Masukkan absolute path ke output image: ");
             String outputPath = scanner.nextLine();
+
+            System.out.print(
+                    "\nApakah Anda ingin membuat GIF yang menunjukkan kompresi dari setiap level kedalaman? (y/n): ");
+            String generateGif = scanner.nextLine().trim().toLowerCase();
+
+            String gifPath = null;
+            if (generateGif.equals("y")) {
+                System.out.print("Masukkan absolute path ke output GIF: ");
+                gifPath = scanner.nextLine();
+            }
 
             startTime = System.currentTimeMillis();
 
@@ -63,6 +79,15 @@ public class Main {
 
             BufferedImage compressedImage = quadTree.generateCompressedImage();
 
+            if (gifPath != null) {
+                try {
+                    QuadTree.generateCompressionGif(quadTree, gifPath);
+                    System.out.println("GIF berhasil dibuat di: " + gifPath);
+                } catch (Exception e) {
+                    System.err.println("Error creating GIF: " + e.getMessage());
+                }
+            }
+
             endTime = System.currentTimeMillis();
 
             FileProcessor.saveImage(compressedImage, outputPath);
@@ -79,6 +104,7 @@ public class Main {
             System.out.println("Kedalaman tree (depth): " + quadTree.getTreeDepth());
             System.out.println("jumlah nodes: " + quadTree.getNodeCount());
             System.out.println("Alamat output: " + outputPath);
+            System.out.println("Alamat gif: " + gifPath);
 
         } catch (IOException e) {
             System.err.println("Error processing image: " + e.getMessage());

@@ -1,5 +1,9 @@
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.FileImageOutputStream;
+import java.io.IOException;
+import java.io.File;
 
 public class QuadTree {
     BufferedImage originalImage;
@@ -202,6 +206,40 @@ public class QuadTree {
             for (QuadTreeNode child : node.getChildren()) {
                 drawQuadTreeAtDepth(child, currentDepth + 1, maxDepth);
             }
+        }
+    }
+
+
+    public static void generateCompressionGif(QuadTree quadTree, String gifPath) throws IOException {
+        int treeDepth = quadTree.getTreeDepth();
+
+        BufferedImage[] frames = new BufferedImage[treeDepth + 1];
+        for (int depth = 0; depth <= treeDepth; depth++) {
+            frames[depth] = quadTree.generateCompressedImageAtDepth(depth);
+        }
+        
+        createGif(frames, gifPath, 800); 
+    }
+    
+    private static void createGif(BufferedImage[] frames, String outputPath, int delayMs) throws IOException {
+        if (frames == null || frames.length == 0) {
+            throw new IllegalArgumentException("No frames provided for GIF creation");
+        }
+        
+        File outputFile = new File(outputPath);
+        File parentDir = outputFile.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+        
+        try (ImageOutputStream output = new FileImageOutputStream(outputFile)) {
+            GifSequenceWriter writer = new GifSequenceWriter(output, frames[0].getType(), delayMs, true);
+            
+            for (BufferedImage frame : frames) {
+                writer.writeToSequence(frame);
+            }
+            
+            writer.close();
         }
     }
 
